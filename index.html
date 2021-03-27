@@ -10,249 +10,228 @@
 	<body>
 		<script src="three.js"></script>
 		<script>
-			const scene = new THREE.Scene();
-			const camera = new THREE.PerspectiveCamera(90, window.innerWidth / window.innerHeight, 0.1, 1000);
+/*================  HELPER FUNCTIONS  ================*/
 
-			const renderer = new THREE.WebGLRenderer();
-			renderer.setSize(window.innerWidth, window.innerHeight);
-			document.body.appendChild(renderer.domElement);
+function create_flying_green_cub() {
+	const geometry = new THREE.BoxGeometry();
+	const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+	const cube = new THREE.Mesh(geometry, material);
+	cube.position.y = 2;
 
-			const geometry = new THREE.BoxGeometry();
-			const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
-			const cube = new THREE.Mesh(geometry, material);
-			scene.add(cube);
-			cube.position.y = 2;
+	return cube;
+}
 
-
-
+function create_ground() {
 	// Load a texture
-	texture3 = new THREE.TextureLoader().load( "ground.jpg" );
-	texture3.wrapS = THREE.RepeatWrapping;
-	texture3.wrapT = THREE.RepeatWrapping;
-	texture3.repeat.set( 10, 10 );
-	// Create a MeshBasicMaterial with a loaded texture
-	//material3 = new THREE.MeshBasicMaterial( { map: texture3, side: THREE.DoubleSide} );
+	texture = new THREE.TextureLoader().load( "ground.jpg" );
+	texture.wrapS = THREE.RepeatWrapping;
+	texture.wrapT = THREE.RepeatWrapping;
+	texture.repeat.set(10, 10);
+
+	// Create plane
+	const geometry = new THREE.PlaneGeometry( 50, 50, 1, 1 );
+	const material = new THREE.MeshBasicMaterial( {color: 0xffffff, side: THREE.DoubleSide, map: texture} );
+	const plane = new THREE.Mesh(geometry, material);
+
+	// Set position
+	plane.rotation.x = Math.PI / 2;
+	plane.position.y = -1;
+	
+	return plane;
+}
+
+function create_onscreen_text() {
+	const text = document.createElement('div');
+	text.style.position = 'absolute';
+	//text.style.zIndex = 1;    // if you still don't see the label, try uncommenting this
+	text.style.width = 100;
+	text.style.height = 100;
+	//text.style.backgroundColor = "white";
+	text.style.color = "white";
+	text.innerHTML = "temp";
+	text.style.top = 200 + 'px';
+	text.style.left = 200 + 'px';
+	text.id = "stats";
+
+	document.body.appendChild(text);
+}
+
+function create_sky(scene) {
+	const loader = new THREE.TextureLoader();
+	scene.background = loader.load('sky.jpg');
+	scene.background.wrapS = THREE.RepeatWrapping;
+	scene.background.wrapT = THREE.RepeatWrapping;
+	scene.background.repeat.set( 0.25, 1 );
+	//scene.background.rotation = 0.1;
+}
+
+function create_moutains_box(scene) {
+	moutain_texture = new THREE.TextureLoader().load( "mountains.png" );
+
+	const moutain_geometry = new THREE.PlaneGeometry( 50, 10, 1, 1 );
+	const moutain_material = new THREE.MeshBasicMaterial( {color: 0xffffff, side: THREE.DoubleSide, map: moutain_texture, transparent: true} );
+	var moutain_plane = new THREE.Mesh( moutain_geometry, moutain_material );
+	//plane2.rotation.x = 1;
+	//moutain_plane.rotation.x = Math.PI / 2;
+	//moutain_plane.position.y = 1;
+	moutain_plane.position.z = -25;
+	scene.add( moutain_plane );
+
+	var moutain_plane2 = new THREE.Mesh( moutain_geometry, moutain_material );
+	moutain_plane2.position.z = 25;
+	moutain_plane2.rotation.y = Math.PI;
+	scene.add( moutain_plane2 );
+
+	var moutain_plane3 = new THREE.Mesh( moutain_geometry, moutain_material );
+	moutain_plane3.position.x = 25;
+	moutain_plane3.rotation.y = Math.PI / 2;
+	scene.add( moutain_plane3 );
+
+	var moutain_plane4 = new THREE.Mesh( moutain_geometry, moutain_material );
+	moutain_plane4.position.x = -25;
+	moutain_plane4.rotation.y = -Math.PI / 2;
+	scene.add( moutain_plane4 );
+}
+
+function create_player_tank() {
+	const cube_texture_loader = new THREE.CubeTextureLoader();
+	//loader.setPath( 'textures/cube/pisa/' );
+
+	var textureLoader1 = new THREE.TextureLoader();
+
+	//let loader = new THREE.TextureLoader();
+	let materialArray = [
+		new THREE.MeshBasicMaterial( { map: textureLoader1.load("tank_side.jpg") } ), // droit
+		new THREE.MeshBasicMaterial( { map: textureLoader1.load("tank_side.jpg") } ), // gauche
+		new THREE.MeshBasicMaterial( { map: textureLoader1.load("tank_top1.jpg") } ), // top
+		new THREE.MeshBasicMaterial( { map: textureLoader1.load("tank_green.jpg") } ), // bottom
+		new THREE.MeshBasicMaterial( { map: textureLoader1.load("tank_back.jpg") } ), // rear
+		new THREE.MeshBasicMaterial( { map: textureLoader1.load("tank_front.jpg") } ), // avant
+	];
+
+	//const tank_base_material = new THREE.MeshBasicMaterial( { color: 0xffffff, map: materialArray } );
+	const tank_base_geometry = new THREE.BoxGeometry( 1, 1, 1 );
+	const tank_base = new THREE.Mesh( tank_base_geometry, materialArray );
+
+	// Scale cube
+	tank_base.scale.y = 0.5;
+	tank_base.scale.z = 1.4;
+	tank_base.scale.x = 0.9;
+
+	// Set position lower so it touches the ground
+	tank_base.position.y = -0.75;
+
+	return tank_base;
+}
+
+/*================  INIT RENDER  ================*/
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(90, window.innerWidth / window.innerHeight, 0.1, 1000);
+camera.position.z = 5;
+
+const renderer = new THREE.WebGLRenderer();
+renderer.setSize(window.innerWidth, window.innerHeight);
+document.body.appendChild(renderer.domElement);
+
+/*================  INIT GAME WORLD  ================*/
+
+const world = new Object();
+
+// Add flying cube
+world.cube = create_flying_green_cub();
+scene.add(world.cube);
+
+// Add terrain
+world.ground = create_ground();
+scene.add(world.ground);
+
+// Add on screen text
+create_onscreen_text();
+
+// Add sky to scene
+create_sky(scene);
+
+// Add moutains around the box
+create_moutains_box(scene);
+
+// Add the player's tank
+world.tank_base = create_player_tank();
+scene.add(world.tank_base);
 
 
 
+/*================  INIT KEYBOARD  ================*/
 
+// based on https://stackoverflow.com/a/12444641
 
-			camera.position.z = 5;
+var map = {}; // You could also use an array
+onkeydown = onkeyup = function(e) {
+	e = e || event; // to deal with IE
+	map[e.keyCode] = e.type == 'keydown';
 
-var text2 = document.createElement('div');
-text2.style.position = 'absolute';
-//text2.style.zIndex = 1;    // if you still don't see the label, try uncommenting this
-text2.style.width = 100;
-text2.style.height = 100;
-//text2.style.backgroundColor = "white";
-text2.style.color = "white";
-text2.innerHTML = "ur gay";
-text2.style.top = 200 + 'px';
-text2.style.left = 200 + 'px';
-text2.id = "stats";
+	// left arrow
+	if (map[37]) {
+		// turn left
+		camera.rotation.y += 0.1;
+	}
 
-document.body.appendChild(text2);
+	// right arrow
+	if (map[39]) {
+		// turn right
+		camera.rotation.y -= 0.1;
+	}
 
+	// up arrow
+	if (map[38]) {
+		// move forward
+		camera.position.x -= Math.sin(camera.rotation.y);
+		camera.position.z -= Math.cos(camera.rotation.y);
+	}
 
+	// down arrow
+	if (map[40]) {
+		// move backwards
+		camera.position.x += Math.sin(camera.rotation.y);
+		camera.position.z += Math.cos(camera.rotation.y);
+	}
 
-const geometry2 = new THREE.PlaneGeometry( 50, 50, 1, 1 );
-const material2 = new THREE.MeshBasicMaterial( {color: 0xffff00, side: THREE.DoubleSide, map: texture3} );
-var plane2 = new THREE.Mesh( geometry2, material2 );
-//plane2.rotation.x = 1;
-plane2.rotation.x = Math.PI / 2;
-plane2.position.y = -1;
-scene.add( plane2 );
+	// page up
+	if (map[33]) {
+		// move camera up
+		camera.position.y += 1;
+	}
 
-
-
-var loader = new THREE.TextureLoader();
-scene.background = loader.load('sky.jpg');
-scene.background.wrapS = THREE.RepeatWrapping;
-scene.background.wrapT = THREE.RepeatWrapping;
-scene.background.repeat.set( 0.25, 1 );
-
-//scene.background.rotation = 0.1;
-
-
-moutain_texture = new THREE.TextureLoader().load( "mountains.png" );
-
-const moutain_geometry = new THREE.PlaneGeometry( 50, 10, 1, 1 );
-const moutain_material = new THREE.MeshBasicMaterial( {color: 0xffffff, side: THREE.DoubleSide, map: moutain_texture, transparent: true} );
-var moutain_plane = new THREE.Mesh( moutain_geometry, moutain_material );
-//plane2.rotation.x = 1;
-//moutain_plane.rotation.x = Math.PI / 2;
-//moutain_plane.position.y = 1;
-moutain_plane.position.z = -25;
-scene.add( moutain_plane );
-
-var moutain_plane2 = new THREE.Mesh( moutain_geometry, moutain_material );
-moutain_plane2.position.z = 25;
-moutain_plane2.rotation.y = Math.PI;
-scene.add( moutain_plane2 );
-
-var moutain_plane3 = new THREE.Mesh( moutain_geometry, moutain_material );
-moutain_plane3.position.x = 25;
-moutain_plane3.rotation.y = Math.PI / 2;
-scene.add( moutain_plane3 );
-
-var moutain_plane4 = new THREE.Mesh( moutain_geometry, moutain_material );
-moutain_plane4.position.x = -25;
-moutain_plane4.rotation.y = -Math.PI / 2;
-scene.add( moutain_plane4 );
+	// page up
+	if (map[34]) {
+		// move camera down
+		camera.position.y -= 1;
+	}
+}
 
 
 
+/*================  INIT ANIMATION  ================*/
 
-const cube_texture_loader = new THREE.CubeTextureLoader();
-//loader.setPath( 'textures/cube/pisa/' );
+const animate = function () {
+	requestAnimationFrame(animate);
 
-var textureLoader1 = new THREE.TextureLoader();
+	world.cube.rotation.x += 0.01;
+	world.cube.rotation.y += 0.01;
 
-//let loader = new THREE.TextureLoader();
-let materialArray = [
-    new THREE.MeshBasicMaterial( { map: textureLoader1.load("tank_side.jpg") } ), // droit
-    new THREE.MeshBasicMaterial( { map: textureLoader1.load("tank_side.jpg") } ), // gauche
-    new THREE.MeshBasicMaterial( { map: textureLoader1.load("tank_top1.jpg") } ), // top
-    new THREE.MeshBasicMaterial( { map: textureLoader1.load("tank_green.jpg") } ), // bottom
-    new THREE.MeshBasicMaterial( { map: textureLoader1.load("tank_back.jpg") } ), // rear
-    new THREE.MeshBasicMaterial( { map: textureLoader1.load("tank_front.jpg") } ), // avant
-];
+	renderer.render(scene, camera);
 
-//const tank_base_material = new THREE.MeshBasicMaterial( { color: 0xffffff, map: materialArray } );
-const tank_base_geometry = new THREE.BoxGeometry( 1, 1, 1 );
+	stats.innerHTML = "Camera: </br>    PosX: " + camera.position.x + 
+	                          "</br>    PosY: " + camera.position.y +
+	                          "</br>    PosZ: " + camera.position.z + 
+	                          "</br>    RotX: " + camera.rotation.x +
+	                          "</br>    RotY: " + camera.rotation.y +
+	                          "</br>    RotZ: " + camera.rotation.z;
 
-const tank_base = new THREE.Mesh( tank_base_geometry, materialArray );
+	// scroll background left and right
+	scene.background.offset = new THREE.Vector2(-camera.rotation.y / (Math.PI * 2), 0.6);
+};
 
-tank_base.scale.y = 0.5;
-tank_base.scale.z = 1.4;
-tank_base.scale.x = 0.9;
-
-tank_base.position.y = -0.8;
-
-scene.add( tank_base );
-
-
-
-			const animate = function () {
-				requestAnimationFrame(animate);
-
-				cube.rotation.x += 0.01;
-				cube.rotation.y += 0.01;
-
-				renderer.render(scene, camera);
-
-				stats.innerHTML = "Camera: </br>    PosX: " + camera.position.x + 
-										  "</br>    PosY: " + camera.position.y +
-										  "</br>    PosZ: " + camera.position.z + 
-										  "</br>    RotX: " + camera.rotation.x +
-										  "</br>    RotY: " + camera.rotation.y +
-										  "</br>    RotZ: " + camera.rotation.z;
-
-
-				// scroll background left and right
-				scene.background.offset = new THREE.Vector2( -camera.rotation.y / (Math.PI * 2), 0.6 );
-
-			};
-
-			/*document.addEventListener('keydown', function (key) { 
-				// left
-				if (key.keyCode === 37) {
-					//camera.position.x -= 1;
-
-					// turn left
-					camera.rotation.y += 0.1;
-				}
-				// right
-				if (key.keyCode === 39) {
-					//camera.position.x += 1;
-
-					// turn right
-					camera.rotation.y -= 0.1;
-				}
-				// up
-				if (key.keyCode === 38) {
-					//camera.position.y += 1;
-
-					camera.position.x -= Math.sin(camera.rotation.y);
-					camera.position.z -= Math.cos(camera.rotation.y);
-				}
-				// down
-				if (key.keyCode === 40) {
-					//camera.position.y -= 1;
-
-					camera.position.x += Math.sin(camera.rotation.y);
-					camera.position.z += Math.cos(camera.rotation.y);
-				}
-				// page up
-				if (key.keyCode === 33) {
-					//camera.position.y -= 1;
-
-					camera.position.y += 1;
-				}
-				// page up
-				if (key.keyCode === 34) {
-					//camera.position.y -= 1;
-
-					camera.position.y -= 1;
-				}
-			});*/
-
-			animate();
-
-
-
-
-
-			var map = {}; // You could also use an array
-			onkeydown = onkeyup = function(e){ 
-				e = e || event; // to deal with IE
-				map[e.keyCode] = e.type == 'keydown';
-				/* insert conditional here */
-				console.log("this func is called.");
-
-				// https://stackoverflow.com/questions/5203407/how-to-detect-if-multiple-keys-are-pressed-at-once-using-javascript
-
-					// left
-				if (map[37]) {
-					//camera.position.x -= 1;
-
-					// turn left
-					camera.rotation.y += 0.1;
-				}
-				// right
-				if (map[39]) {
-					//camera.position.x += 1;
-
-					// turn right
-					camera.rotation.y -= 0.1;
-				}
-				// up
-				if (map[38]) {
-					//camera.position.y += 1;
-
-					camera.position.x -= Math.sin(camera.rotation.y);
-					camera.position.z -= Math.cos(camera.rotation.y);
-				}
-				// down
-				if (map[40]) {
-					//camera.position.y -= 1;
-
-					camera.position.x += Math.sin(camera.rotation.y);
-					camera.position.z += Math.cos(camera.rotation.y);
-				}
-				// page up
-				if (map[33]) {
-					//camera.position.y -= 1;
-
-					camera.position.y += 1;
-				}
-				// page up
-				if (map[34]) {
-					//camera.position.y -= 1;
-
-					camera.position.y -= 1;
-				}
-			}
+animate();
 
 
 		</script>
