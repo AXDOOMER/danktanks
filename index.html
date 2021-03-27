@@ -270,8 +270,8 @@ onkeydown = onkeyup = function(e) {
 	world.tank_turret.position.z = world.tank_base.position.z + 0.2 * Math.cos(world.tank_base.rotation.y);
 
 	// For camera to film tank from the rear
-	camera.position.x = world.tank_base.position.x + 2.5 * Math.sin(world.tank_turret.rotation.y);
-	camera.position.z = world.tank_base.position.z + 2.5 * Math.cos(world.tank_turret.rotation.y);
+	camera.position.x = world.tank_turret.position.x + 2.5 * Math.sin(world.tank_turret.rotation.y);
+	camera.position.z = world.tank_turret.position.z + 2.5 * Math.cos(world.tank_turret.rotation.y);
 	//camera.position.y = world.tank_base.position.y;
 
 //	camera.rotation.x = world.tank_base.rotation.x;
