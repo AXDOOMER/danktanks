@@ -124,6 +124,8 @@ const tank_base_geometry = new THREE.BoxGeometry( 1, 1, 1 );
 const tank_base = new THREE.Mesh( tank_base_geometry, materialArray );
 
 tank_base.scale.y = 0.5;
+tank_base.scale.z = 1.4;
+tank_base.scale.x = 0.9;
 
 tank_base.position.y = -0.8;
 
@@ -152,7 +154,7 @@ scene.add( tank_base );
 
 			};
 
-			document.addEventListener('keydown', function (key) { 
+			/*document.addEventListener('keydown', function (key) { 
 				// left
 				if (key.keyCode === 37) {
 					//camera.position.x -= 1;
@@ -181,9 +183,78 @@ scene.add( tank_base );
 					camera.position.x += Math.sin(camera.rotation.y);
 					camera.position.z += Math.cos(camera.rotation.y);
 				}
-			});
+				// page up
+				if (key.keyCode === 33) {
+					//camera.position.y -= 1;
+
+					camera.position.y += 1;
+				}
+				// page up
+				if (key.keyCode === 34) {
+					//camera.position.y -= 1;
+
+					camera.position.y -= 1;
+				}
+			});*/
 
 			animate();
+
+
+
+
+
+			var map = {}; // You could also use an array
+			onkeydown = onkeyup = function(e){ 
+				e = e || event; // to deal with IE
+				map[e.keyCode] = e.type == 'keydown';
+				/* insert conditional here */
+				console.log("this func is called.");
+
+				// https://stackoverflow.com/questions/5203407/how-to-detect-if-multiple-keys-are-pressed-at-once-using-javascript
+
+					// left
+				if (map[37]) {
+					//camera.position.x -= 1;
+
+					// turn left
+					camera.rotation.y += 0.1;
+				}
+				// right
+				if (map[39]) {
+					//camera.position.x += 1;
+
+					// turn right
+					camera.rotation.y -= 0.1;
+				}
+				// up
+				if (map[38]) {
+					//camera.position.y += 1;
+
+					camera.position.x -= Math.sin(camera.rotation.y);
+					camera.position.z -= Math.cos(camera.rotation.y);
+				}
+				// down
+				if (map[40]) {
+					//camera.position.y -= 1;
+
+					camera.position.x += Math.sin(camera.rotation.y);
+					camera.position.z += Math.cos(camera.rotation.y);
+				}
+				// page up
+				if (map[33]) {
+					//camera.position.y -= 1;
+
+					camera.position.y += 1;
+				}
+				// page up
+				if (map[34]) {
+					//camera.position.y -= 1;
+
+					camera.position.y -= 1;
+				}
+			}
+
+
 		</script>
 	</body>
 </html>
