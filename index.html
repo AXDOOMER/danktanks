@@ -11,6 +11,26 @@
 		<script src="three.js"></script>
 		<script src="stats.js"></script>
 		<script>
+////////////////////////////////////////////////////////////////////////////////
+// ISC License
+//
+// Copyright (c) 2021, Alexandre-Xavier Labonté-Lamoureux
+//
+// Permission to use, copy, modify, and/or distribute this software for any
+// purpose with or without fee is hereby granted, provided that the above
+// copyright notice and this permission notice appear in all copies.
+//
+// THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH
+// REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY
+// AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT,
+// INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM
+// LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE
+// OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+// PERFORMANCE OF THIS SOFTWARE.
+////////////////////////////////////////////////////////////////////////////////
+
+const RES = "res/";
+
 /*================  HELPER FUNCTIONS  ================*/
 
 function create_flying_green_club() {
@@ -24,7 +44,7 @@ function create_flying_green_club() {
 
 function create_ground() {
 	// Load a texture
-	texture = new THREE.TextureLoader().load( "ground.jpg" );
+	texture = new THREE.TextureLoader().load(RES + "ground.jpg");
 	texture.wrapS = THREE.RepeatWrapping;
 	texture.wrapT = THREE.RepeatWrapping;
 	texture.repeat.set(10, 10);
@@ -59,7 +79,7 @@ function create_onscreen_text() {
 
 function create_sky(scene) {
 	const loader = new THREE.TextureLoader();
-	scene.background = loader.load('sky.jpg');
+	scene.background = loader.load(RES + "sky.jpg");
 	scene.background.wrapS = THREE.RepeatWrapping;
 	scene.background.wrapT = THREE.RepeatWrapping;
 	scene.background.repeat.set(0.25, 1);
@@ -67,7 +87,7 @@ function create_sky(scene) {
 }
 
 function create_moutains_box(scene) {
-	moutain_texture = new THREE.TextureLoader().load("mountains.webp");
+	moutain_texture = new THREE.TextureLoader().load(RES + "mountains.webp");
 
 	const moutain_geometry = new THREE.PlaneGeometry( 50, 10, 1, 1 );
 	const moutain_material = new THREE.MeshBasicMaterial( {color: 0xffffff, side: THREE.DoubleSide, map: moutain_texture, transparent: true} );
@@ -96,12 +116,12 @@ function create_player_tank_base() {
 	var textureLoader = new THREE.TextureLoader();
 
 	let materialArray = [
-		new THREE.MeshBasicMaterial( { map: textureLoader.load("tank_side.jpg") } ), // droit
-		new THREE.MeshBasicMaterial( { map: textureLoader.load("tank_side.jpg") } ), // gauche
-		new THREE.MeshBasicMaterial( { map: textureLoader.load("tank_top2.jpg") } ), // top
-		new THREE.MeshBasicMaterial( { map: textureLoader.load("tank_green.jpg") } ), // bottom
-		new THREE.MeshBasicMaterial( { map: textureLoader.load("tank_back.jpg") } ), // rear
-		new THREE.MeshBasicMaterial( { map: textureLoader.load("tank_front.jpg") } ), // avant
+		new THREE.MeshBasicMaterial( { map: textureLoader.load(RES + "tank_side.jpg") } ), // droit
+		new THREE.MeshBasicMaterial( { map: textureLoader.load(RES + "tank_side.jpg") } ), // gauche
+		new THREE.MeshBasicMaterial( { map: textureLoader.load(RES + "tank_top2.jpg") } ), // top
+		new THREE.MeshBasicMaterial( { map: textureLoader.load(RES + "tank_green.jpg") } ), // bottom
+		new THREE.MeshBasicMaterial( { map: textureLoader.load(RES + "tank_back.jpg") } ), // rear
+		new THREE.MeshBasicMaterial( { map: textureLoader.load(RES + "tank_front.jpg") } ), // avant
 	];
 
 	const tank_base_geometry = new THREE.BoxGeometry( 0.9, 0.5, 1.4 );
@@ -117,12 +137,12 @@ function create_player_tank_turret() {
 	var textureLoader = new THREE.TextureLoader();
 
 	let materialArray = [
-		new THREE.MeshBasicMaterial( { map: textureLoader.load("tank_green.jpg") } ), // droit
-		new THREE.MeshBasicMaterial( { map: textureLoader.load("tank_green.jpg") } ), // gauche
-		new THREE.MeshBasicMaterial( { map: textureLoader.load("tank_top1.jpg") } ), // top
-		new THREE.MeshBasicMaterial( { map: textureLoader.load("tank_green.jpg") } ), // bottom
-		new THREE.MeshBasicMaterial( { map: textureLoader.load("tank_turret_back.jpg") } ), // rear
-		new THREE.MeshBasicMaterial( { map: textureLoader.load("tank_green.jpg") } ), // avant
+		new THREE.MeshBasicMaterial( { map: textureLoader.load(RES + "tank_green.jpg") } ), // droit
+		new THREE.MeshBasicMaterial( { map: textureLoader.load(RES + "tank_green.jpg") } ), // gauche
+		new THREE.MeshBasicMaterial( { map: textureLoader.load(RES + "tank_top1.jpg") } ), // top
+		new THREE.MeshBasicMaterial( { map: textureLoader.load(RES + "tank_green.jpg") } ), // bottom
+		new THREE.MeshBasicMaterial( { map: textureLoader.load(RES + "tank_turret_back.jpg") } ), // rear
+		new THREE.MeshBasicMaterial( { map: textureLoader.load(RES + "tank_green.jpg") } ), // avant
 	];
 
 	//const tank_base_material = new THREE.MeshBasicMaterial( { color: 0xffffff, map: materialArray } );
@@ -143,17 +163,17 @@ function create_player_tank_turret() {
 function create_player_tank_cannon() {
 	var textureLoader = new THREE.TextureLoader();
 
-	const left_texture = textureLoader.load("tank_cannon.jpg");
+	const left_texture = textureLoader.load(RES + "tank_cannon.jpg");
 	left_texture.wrapS = THREE.RepeatWrapping;
 	left_texture.wrapT = THREE.RepeatWrapping;
 	left_texture.rotation = Math.PI / 2;
 
-	const right_texture = textureLoader.load("tank_cannon.jpg");
+	const right_texture = textureLoader.load(RES + "tank_cannon.jpg");
 	right_texture.wrapS = THREE.RepeatWrapping;
 	right_texture.wrapT = THREE.RepeatWrapping;
 	right_texture.rotation = -Math.PI / 2;
 
-	const bottom_texture = textureLoader.load("tank_cannon.jpg");
+	const bottom_texture = textureLoader.load(RES + "tank_cannon.jpg");
 	bottom_texture.wrapS = THREE.RepeatWrapping;
 	bottom_texture.wrapT = THREE.RepeatWrapping;
 	bottom_texture.rotation = Math.PI;
@@ -161,7 +181,7 @@ function create_player_tank_cannon() {
 	let materialArray = [
 		new THREE.MeshBasicMaterial( { map: right_texture } ), // droit
 		new THREE.MeshBasicMaterial( { map: left_texture } ), // gauche
-		new THREE.MeshBasicMaterial( { map: textureLoader.load("tank_cannon.jpg") } ), // top
+		new THREE.MeshBasicMaterial( { map: textureLoader.load(RES + "tank_cannon.jpg") } ), // top
 		new THREE.MeshBasicMaterial( { map: bottom_texture } ), // bottom
 		new THREE.MeshBasicMaterial( { color: 0x1e290c } ), // rear
 		new THREE.MeshBasicMaterial( { color: 0x000000 } ), // avant
@@ -209,7 +229,7 @@ function create_small_house(px, pz, ry) {
 	var textureLoader = new THREE.TextureLoader();
 
 	const roof_geometry = new THREE.ConeGeometry(3, 1.5, 4);
-	const roof_texture = textureLoader.load("roof.jpg");
+	const roof_texture = textureLoader.load(RES + "roof.jpg");
 	roof_texture.rotation = -0.14;
 	roof_texture.wrapS = THREE.RepeatWrapping;
 	roof_texture.wrapT = THREE.RepeatWrapping;
@@ -222,12 +242,12 @@ function create_small_house(px, pz, ry) {
 	roof.rotation.y = ry + Math.PI / 4;
 
 	let materialArray = [
-		new THREE.MeshBasicMaterial( { map: textureLoader.load("wall_two_windows.jpg") } ), // droit
-		new THREE.MeshBasicMaterial( { map: textureLoader.load("wall_two_windows.jpg") } ), // gauche
-		new THREE.MeshBasicMaterial( { map: textureLoader.load("roof.jpg") } ), // top
-		new THREE.MeshBasicMaterial( { map: textureLoader.load("ground.jpg") } ), // bottom
-		new THREE.MeshBasicMaterial( { map: textureLoader.load("wall_two_windows.jpg") } ), // rear
-		new THREE.MeshBasicMaterial( { map: textureLoader.load("door-small-2.jpg") } ), // avant
+		new THREE.MeshBasicMaterial( { map: textureLoader.load(RES + "wall_two_windows.jpg") } ), // droit
+		new THREE.MeshBasicMaterial( { map: textureLoader.load(RES + "wall_two_windows.jpg") } ), // gauche
+		new THREE.MeshBasicMaterial( { map: textureLoader.load(RES + "roof.jpg") } ), // top
+		new THREE.MeshBasicMaterial( { map: textureLoader.load(RES + "ground.jpg") } ), // bottom
+		new THREE.MeshBasicMaterial( { map: textureLoader.load(RES + "wall_two_windows.jpg") } ), // rear
+		new THREE.MeshBasicMaterial( { map: textureLoader.load(RES + "door-small-2.jpg") } ), // avant
 	];
 
 	const house_geometry = new THREE.BoxGeometry(4, 2, 4);
@@ -252,7 +272,7 @@ function create_big_house(px, pz, ry) {
 	const textureLoader = new THREE.TextureLoader();
 
 	const roof_geometry = new THREE.ConeGeometry(4.3, 2, 4);
-	const roof_texture = textureLoader.load("roof2.jpg");
+	const roof_texture = textureLoader.load(RES + "roof2.jpg");
 	roof_texture.rotation = -0.12;
 	roof_texture.wrapS = THREE.RepeatWrapping;
 	roof_texture.wrapT = THREE.RepeatWrapping;
@@ -265,12 +285,12 @@ function create_big_house(px, pz, ry) {
 	roof.rotation.y = ry + Math.PI / 4;
 
 	let house_material = [
-		new THREE.MeshBasicMaterial( { map: textureLoader.load("wall_height_windows.jpg") } ), // droit
-		new THREE.MeshBasicMaterial( { map: textureLoader.load("wall_height_windows.jpg") } ), // gauche
-		new THREE.MeshBasicMaterial( { map: textureLoader.load("roof.jpg") } ), // top
-		new THREE.MeshBasicMaterial( { map: textureLoader.load("ground.jpg") } ), // bottom
-		new THREE.MeshBasicMaterial( { map: textureLoader.load("wall_six_windows.jpg") } ), // rear
-		new THREE.MeshBasicMaterial( { map: textureLoader.load("door-big.jpg") } ), // avant
+		new THREE.MeshBasicMaterial( { map: textureLoader.load(RES + "wall_height_windows.jpg") } ), // droit
+		new THREE.MeshBasicMaterial( { map: textureLoader.load(RES + "wall_height_windows.jpg") } ), // gauche
+		new THREE.MeshBasicMaterial( { map: textureLoader.load(RES + "roof.jpg") } ), // top
+		new THREE.MeshBasicMaterial( { map: textureLoader.load(RES + "ground.jpg") } ), // bottom
+		new THREE.MeshBasicMaterial( { map: textureLoader.load(RES + "wall_six_windows.jpg") } ), // rear
+		new THREE.MeshBasicMaterial( { map: textureLoader.load(RES + "door-big.jpg") } ), // avant
 	];
 
 	const house_geometry = new THREE.BoxGeometry(6, 3, 6);
