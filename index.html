@@ -171,6 +171,30 @@ function createStats() {
 	return stats;
 }
 
+function create_bullet(px, py, pz, rx, ry, rz) {
+	const geometry = new THREE.BoxGeometry(1, 1, 1);
+	const material = new THREE.MeshBasicMaterial({color: 0xff0000});
+	const cube = new THREE.Mesh(geometry, material);
+
+	// Set position and direction
+	cube.position.x = px;
+	cube.position.y = py;
+	cube.position.z = pz;
+	cube.rotation.x = rx;
+	cube.rotation.y = ry;
+	cube.rotation.z = rz;
+
+	// Set size
+	cube.scale.x = 0.1;
+	cube.scale.y = 0.1;
+	cube.scale.z = 0.1;
+
+	// Set tic for lifetime counter
+	cube.tics = 0;
+
+	return cube;
+}
+
 /*================  INIT RENDER  ================*/
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(90, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -214,6 +238,9 @@ scene.add(world.tank_turret);
 // Add stats to screen
 stats = createStats();
 document.body.appendChild(stats.domElement);
+
+// Add array for bullets (it really is a shell)
+world.bullets = [];
 
 /*================  INIT KEYBOARD  ================*/
 
@@ -294,7 +321,14 @@ const animate = function () {
 		camera.position.y -= 0.05;
 	}
 
-	// Update turrent position on tank base
+	// é or /
+	if (map[191]) {
+		// reset turrent rotation and camera height
+		camera.position.y = 0.4;
+		world.tank_turret.rotation.y = world.tank_base.rotation.y;
+	}
+
+	// Update turret position on tank base
 	world.tank_turret.position.x = world.tank_base.position.x + 0.2 * Math.sin(world.tank_base.rotation.y);
 	world.tank_turret.position.z = world.tank_base.position.z + 0.2 * Math.cos(world.tank_base.rotation.y);
 
@@ -306,6 +340,37 @@ const animate = function () {
 	const xdiff = camera.position.x - world.tank_turret.position.x;
 	const zdiff = camera.position.z - world.tank_turret.position.z;
 	camera.rotation.y = Math.atan2(xdiff, zdiff);
+
+	/*=========== UPDATE BULLETS ===============*/
+
+	// space
+	if (map[32] || map[17]) {
+		// fire
+		const bullet = create_bullet(world.tank_turret.position.x, world.tank_turret.position.y, world.tank_turret.position.z, 
+		                             world.tank_turret.rotation.x, world.tank_turret.rotation.y, world.tank_turret.rotation.z);
+
+		scene.add(bullet);
+		world.bullets.push(bullet);
+	}
+
+	// Iterates backwards, process older bullets first
+	// If these were two loops, it could be further optimized
+	// by stopping processing when encountering bullets that are not expired
+	for (var i = world.bullets.length - 1; i >= 0; i--) {
+		const bullet = world.bullets[i];
+
+		// Destroy if lifetime has expired
+		if (bullet.tics > 60 * 3) {
+			scene.remove(bullet);        // remove from renderer
+			world.bullets.splice(i, 1);
+			continue;
+		}
+
+		// Move
+		bullet.position.x -= 0.5 * Math.sin(bullet.rotation.y);
+		bullet.position.z -= 0.5 * Math.cos(bullet.rotation.y);
+		bullet.tics += 1;
+	}
 
 	/*=========== UPDATE RENDERING ===============*/
 
