@@ -71,10 +71,8 @@ function create_moutains_box(scene) {
 
 	const moutain_geometry = new THREE.PlaneGeometry( 50, 10, 1, 1 );
 	const moutain_material = new THREE.MeshBasicMaterial( {color: 0xffffff, side: THREE.DoubleSide, map: moutain_texture, transparent: true} );
-	var moutain_plane = new THREE.Mesh( moutain_geometry, moutain_material );
-	//plane2.rotation.x = 1;
-	//moutain_plane.rotation.x = Math.PI / 2;
-	//moutain_plane.position.y = 1;
+	var moutain_plane = new THREE.Mesh(moutain_geometry, moutain_material);
+
 	moutain_plane.position.z = -25;
 	scene.add( moutain_plane );
 
@@ -94,70 +92,87 @@ function create_moutains_box(scene) {
 	scene.add( moutain_plane4 );
 }
 
-function create_player_tank() {
-	const cube_texture_loader = new THREE.CubeTextureLoader();
-	//loader.setPath( 'textures/cube/pisa/' );
+function create_player_tank_base() {
+	var textureLoader = new THREE.TextureLoader();
 
-	var textureLoader1 = new THREE.TextureLoader();
-
-	//let loader = new THREE.TextureLoader();
 	let materialArray = [
-		new THREE.MeshBasicMaterial( { map: textureLoader1.load("tank_side.jpg") } ), // droit
-		new THREE.MeshBasicMaterial( { map: textureLoader1.load("tank_side.jpg") } ), // gauche
-		new THREE.MeshBasicMaterial( { map: textureLoader1.load("tank_top2.jpg") } ), // top
-		new THREE.MeshBasicMaterial( { map: textureLoader1.load("tank_green.jpg") } ), // bottom
-		new THREE.MeshBasicMaterial( { map: textureLoader1.load("tank_back.jpg") } ), // rear
-		new THREE.MeshBasicMaterial( { map: textureLoader1.load("tank_front.jpg") } ), // avant
+		new THREE.MeshBasicMaterial( { map: textureLoader.load("tank_side.jpg") } ), // droit
+		new THREE.MeshBasicMaterial( { map: textureLoader.load("tank_side.jpg") } ), // gauche
+		new THREE.MeshBasicMaterial( { map: textureLoader.load("tank_top2.jpg") } ), // top
+		new THREE.MeshBasicMaterial( { map: textureLoader.load("tank_green.jpg") } ), // bottom
+		new THREE.MeshBasicMaterial( { map: textureLoader.load("tank_back.jpg") } ), // rear
+		new THREE.MeshBasicMaterial( { map: textureLoader.load("tank_front.jpg") } ), // avant
 	];
 
-	//const tank_base_material = new THREE.MeshBasicMaterial( { color: 0xffffff, map: materialArray } );
-	const tank_base_geometry = new THREE.BoxGeometry( 1, 1, 1 );
-	const tank_base = new THREE.Mesh( tank_base_geometry, materialArray );
-
-	// Scale cube
-	tank_base.scale.y = 0.5;
-	tank_base.scale.z = 1.4;
-	tank_base.scale.x = 0.9;
+	const tank_base_geometry = new THREE.BoxGeometry( 0.9, 0.5, 1.4 );
+	const tank_base = new THREE.Mesh(tank_base_geometry, materialArray);
 
 	// Set position lower so it touches the ground
 	tank_base.position.y = -0.75;
-
-	// Set turret rotation
-//	tank_base.turrent_rotation = tank_base.rotation.y;
 
 	return tank_base;
 }
 
 function create_player_tank_turret() {
-	const cube_texture_loader = new THREE.CubeTextureLoader();
-	//loader.setPath( 'textures/cube/pisa/' );
+	var textureLoader = new THREE.TextureLoader();
 
-	var textureLoader1 = new THREE.TextureLoader();
-
-	//let loader = new THREE.TextureLoader();
 	let materialArray = [
-		new THREE.MeshBasicMaterial( { map: textureLoader1.load("tank_green.jpg") } ), // droit
-		new THREE.MeshBasicMaterial( { map: textureLoader1.load("tank_green.jpg") } ), // gauche
-		new THREE.MeshBasicMaterial( { map: textureLoader1.load("tank_top1.jpg") } ), // top
-		new THREE.MeshBasicMaterial( { map: textureLoader1.load("tank_green.jpg") } ), // bottom
-		new THREE.MeshBasicMaterial( { map: textureLoader1.load("tank_turret_back.jpg") } ), // rear
-		new THREE.MeshBasicMaterial( { map: textureLoader1.load("tank_green.jpg") } ), // avant
+		new THREE.MeshBasicMaterial( { map: textureLoader.load("tank_green.jpg") } ), // droit
+		new THREE.MeshBasicMaterial( { map: textureLoader.load("tank_green.jpg") } ), // gauche
+		new THREE.MeshBasicMaterial( { map: textureLoader.load("tank_top1.jpg") } ), // top
+		new THREE.MeshBasicMaterial( { map: textureLoader.load("tank_green.jpg") } ), // bottom
+		new THREE.MeshBasicMaterial( { map: textureLoader.load("tank_turret_back.jpg") } ), // rear
+		new THREE.MeshBasicMaterial( { map: textureLoader.load("tank_green.jpg") } ), // avant
 	];
 
 	//const tank_base_material = new THREE.MeshBasicMaterial( { color: 0xffffff, map: materialArray } );
-	const tank_turret_geometry = new THREE.BoxGeometry( 1, 1, 1 );
-	const tank_turret = new THREE.Mesh( tank_turret_geometry, materialArray );
+	const tank_turret_geometry = new THREE.BoxGeometry( 0.6, 0.3, 0.6 );
+	const tank_turret = new THREE.Mesh(tank_turret_geometry, materialArray);
 
-	// Scale cube
-	tank_turret.scale.y = 0.3;
-	tank_turret.scale.z = 0.6;
-	tank_turret.scale.x = 0.6;
+	tank_cannon = create_player_tank_cannon();
 
-	// Set position above base
-	tank_turret.position.y = -0.35;
-	tank_turret.position.z = 0.2;
+	group = new THREE.Object3D();
+	group.add(tank_turret);
+	group.add(tank_cannon);
 
-	return tank_turret;
+	group.position.y = -0.35;
+
+	return group;
+}
+
+function create_player_tank_cannon() {
+	var textureLoader = new THREE.TextureLoader();
+
+	const left_texture = textureLoader.load("tank_cannon.jpg");
+	left_texture.wrapS = THREE.RepeatWrapping;
+	left_texture.wrapT = THREE.RepeatWrapping;
+	left_texture.rotation = Math.PI / 2;
+
+	const right_texture = textureLoader.load("tank_cannon.jpg");
+	right_texture.wrapS = THREE.RepeatWrapping;
+	right_texture.wrapT = THREE.RepeatWrapping;
+	right_texture.rotation = -Math.PI / 2;
+
+	const bottom_texture = textureLoader.load("tank_cannon.jpg");
+	bottom_texture.wrapS = THREE.RepeatWrapping;
+	bottom_texture.wrapT = THREE.RepeatWrapping;
+	bottom_texture.rotation = Math.PI;
+
+	let materialArray = [
+		new THREE.MeshBasicMaterial( { map: right_texture } ), // droit
+		new THREE.MeshBasicMaterial( { map: left_texture } ), // gauche
+		new THREE.MeshBasicMaterial( { map: textureLoader.load("tank_cannon.jpg") } ), // top
+		new THREE.MeshBasicMaterial( { map: bottom_texture } ), // bottom
+		new THREE.MeshBasicMaterial( { color: 0x1e290c } ), // rear
+		new THREE.MeshBasicMaterial( { color: 0x000000 } ), // avant
+	];
+
+	const tank_cannon_geometry = new THREE.BoxGeometry(0.1, 0.1, 0.8);
+	const tank_cannon = new THREE.Mesh(tank_cannon_geometry, materialArray);
+
+	tank_cannon.position.z = -0.69;
+
+	return tank_cannon;
 }
 
 function createStats() {
@@ -172,7 +187,7 @@ function createStats() {
 }
 
 function create_bullet(px, py, pz, rx, ry, rz) {
-	const geometry = new THREE.BoxGeometry(1, 1, 1);
+	const geometry = new THREE.BoxGeometry(0.1, 0.1, 0.1);
 	const material = new THREE.MeshBasicMaterial({color: 0xff0000});
 	const cube = new THREE.Mesh(geometry, material);
 
@@ -184,15 +199,96 @@ function create_bullet(px, py, pz, rx, ry, rz) {
 	cube.rotation.y = ry;
 	cube.rotation.z = rz;
 
-	// Set size
-	cube.scale.x = 0.1;
-	cube.scale.y = 0.1;
-	cube.scale.z = 0.1;
-
 	// Set tic for lifetime counter
 	cube.tics = 0;
 
 	return cube;
+}
+
+function create_small_house(px, pz, ry) {
+	var textureLoader = new THREE.TextureLoader();
+
+	const roof_geometry = new THREE.ConeGeometry(3, 1.5, 4);
+	const roof_texture = textureLoader.load("roof.jpg");
+	roof_texture.rotation = -0.14;
+	roof_texture.wrapS = THREE.RepeatWrapping;
+	roof_texture.wrapT = THREE.RepeatWrapping;
+	roof_texture.repeat.set(12, 3);
+	const roof_material = new THREE.MeshBasicMaterial( {color: 0xffffff, map: roof_texture} );
+	const roof = new THREE.Mesh(roof_geometry, roof_material);
+	roof.position.x = px;
+	roof.position.y = 1.75;
+	roof.position.z = pz;
+	roof.rotation.y = ry + Math.PI / 4;
+
+	let materialArray = [
+		new THREE.MeshBasicMaterial( { map: textureLoader.load("wall_two_windows.jpg") } ), // droit
+		new THREE.MeshBasicMaterial( { map: textureLoader.load("wall_two_windows.jpg") } ), // gauche
+		new THREE.MeshBasicMaterial( { map: textureLoader.load("roof.jpg") } ), // top
+		new THREE.MeshBasicMaterial( { map: textureLoader.load("ground.jpg") } ), // bottom
+		new THREE.MeshBasicMaterial( { map: textureLoader.load("wall_two_windows.jpg") } ), // rear
+		new THREE.MeshBasicMaterial( { map: textureLoader.load("door-small-2.jpg") } ), // avant
+	];
+
+	const house_geometry = new THREE.BoxGeometry(4, 2, 4);
+	const house = new THREE.Mesh(house_geometry, materialArray);
+
+	// Set position lower so it touches the ground
+	house.position.y = 0;
+
+	// Init at desired position
+	house.position.x = px;
+	house.position.z = pz;
+	house.rotation.y = ry;
+
+	group = new THREE.Object3D();
+	group.add(roof);
+	group.add(house);
+
+	return group;
+}
+
+function create_big_house(px, pz, ry) {
+	const textureLoader = new THREE.TextureLoader();
+
+	const roof_geometry = new THREE.ConeGeometry(4.3, 2, 4);
+	const roof_texture = textureLoader.load("roof2.jpg");
+	roof_texture.rotation = -0.12;
+	roof_texture.wrapS = THREE.RepeatWrapping;
+	roof_texture.wrapT = THREE.RepeatWrapping;
+	roof_texture.repeat.set(10, 1);
+	const roof_material = new THREE.MeshBasicMaterial( {color: 0xffffff, map: roof_texture} );
+	const roof = new THREE.Mesh(roof_geometry, roof_material);
+	roof.position.x = px;
+	roof.position.y = 3;
+	roof.position.z = pz;
+	roof.rotation.y = ry + Math.PI / 4;
+
+	let house_material = [
+		new THREE.MeshBasicMaterial( { map: textureLoader.load("wall_height_windows.jpg") } ), // droit
+		new THREE.MeshBasicMaterial( { map: textureLoader.load("wall_height_windows.jpg") } ), // gauche
+		new THREE.MeshBasicMaterial( { map: textureLoader.load("roof.jpg") } ), // top
+		new THREE.MeshBasicMaterial( { map: textureLoader.load("ground.jpg") } ), // bottom
+		new THREE.MeshBasicMaterial( { map: textureLoader.load("wall_six_windows.jpg") } ), // rear
+		new THREE.MeshBasicMaterial( { map: textureLoader.load("door-big.jpg") } ), // avant
+	];
+
+	const house_geometry = new THREE.BoxGeometry(6, 3, 6);
+	const house = new THREE.Mesh(house_geometry, house_material);
+
+	// Set position lower so it touches the ground
+	house.position.y = 0.5;
+
+	// Init at desired position
+	house.position.x = px;
+	house.position.z = pz;
+	house.rotation.y = ry;
+
+	group = new THREE.Object3D();
+	group.add(roof);
+	group.add(house);
+
+	return group;
 }
 
 /*================  INIT RENDER  ================*/
@@ -210,10 +306,6 @@ document.body.appendChild(renderer.domElement);
 const world = new Object();
 SPEED_MULTIPLIER = 0.5;
 
-// Add flying cube
-world.cube = create_flying_green_club();
-scene.add(world.cube);
-
 // Add terrain
 world.ground = create_ground();
 scene.add(world.ground);
@@ -228,10 +320,10 @@ create_sky(scene);
 create_moutains_box(scene);
 
 // Add the player's tank
-// base
-world.tank_base = create_player_tank();
+// tank base
+world.tank_base = create_player_tank_base();
 scene.add(world.tank_base);
-// turret
+// turret (with cannon)
 world.tank_turret = create_player_tank_turret();
 scene.add(world.tank_turret);
 
@@ -241,6 +333,21 @@ document.body.appendChild(stats.domElement);
 
 // Add array for bullets (it really is a shell)
 world.bullets = [];
+// Add array for houses (buildings)
+world.houses = [];
+
+
+// Spawn some houses
+world.houses.push(create_small_house(-2, -5, 0));
+world.houses.push(create_small_house(10, 3, 0.5));
+world.houses.push(create_small_house(-5, 8, 1.2));
+
+world.houses.push(create_big_house(-10, 15, -1));
+world.houses.push(create_big_house(19, -7, 1.6));
+
+for (var i = 0; i < world.houses.length; i++) {
+	scene.add(world.houses[i]);
+}
 
 /*================  INIT KEYBOARD  ================*/
 
@@ -256,12 +363,9 @@ onkeydown = onkeyup = function(e) {
 /*================  INIT ANIMATION  ================*/
 
 const animate = function () {
-    setTimeout( function() {
-        requestAnimationFrame( animate );
-    }, 1000 / 60 );
-
-	world.cube.rotation.x += 0.01;
-	world.cube.rotation.y += 0.01;
+	setTimeout( function() {
+		requestAnimationFrame( animate );
+	}, 1000 / 60 );
 
 	/*============ UPDATE PLAYER =============*/
 
@@ -284,8 +388,6 @@ const animate = function () {
 		// move forward
 		world.tank_base.position.x -= 0.2 * SPEED_MULTIPLIER * Math.sin(world.tank_base.rotation.y);
 		world.tank_base.position.z -= 0.2 * SPEED_MULTIPLIER * Math.cos(world.tank_base.rotation.y);
-//		world.tank_turret.position.x -= 0.2 * Math.sin(world.tank_base.rotation.y);
-//		world.tank_turret.position.z -= 0.2 * Math.cos(world.tank_base.rotation.y);
 	}
 
 	// down arrow
@@ -293,18 +395,16 @@ const animate = function () {
 		// move backwards
 		world.tank_base.position.x += 0.2 * SPEED_MULTIPLIER * Math.sin(world.tank_base.rotation.y);
 		world.tank_base.position.z += 0.2 * SPEED_MULTIPLIER * Math.cos(world.tank_base.rotation.y);
-//		world.tank_turret.position.x += 0.2 * Math.sin(world.tank_base.rotation.y);
-//		world.tank_turret.position.z += 0.2 * Math.cos(world.tank_base.rotation.y);
 	}
 
-	// comma
-	if (map[188]) {
+	// comma or z
+	if (map[188] || map[90]) {
 		// turn turret left
 		world.tank_turret.rotation.y += 0.1 * SPEED_MULTIPLIER;
 	}
 
-	// period
-	if (map[190]) {
+	// period or x
+	if (map[190] || map[88]) {
 		// turn turret right
 		world.tank_turret.rotation.y -= 0.1 * SPEED_MULTIPLIER;
 	}
@@ -312,13 +412,17 @@ const animate = function () {
 	// page up
 	if (map[33]) {
 		// move camera up
-		camera.position.y += 0.05;
+		if (camera.position.y < 0.96) {
+			camera.position.y += 0.05;
+		}
 	}
 
-	// page up
+	// page down
 	if (map[34]) {
 		// move camera down
-		camera.position.y -= 0.05;
+		if (camera.position.y > -0.80) {
+			camera.position.y -= 0.05;
+		}
 	}
 
 	// é or /
@@ -343,12 +447,15 @@ const animate = function () {
 
 	/*=========== UPDATE BULLETS ===============*/
 
-	// space
+	// space key
 	if (map[32] || map[17]) {
 		// fire
-		const bullet = create_bullet(world.tank_turret.position.x, world.tank_turret.position.y, world.tank_turret.position.z, 
+		const bullet = create_bullet(world.tank_turret.position.x - 0.65 * Math.sin(world.tank_turret.rotation.y),
+		                             world.tank_turret.position.y,
+		                             world.tank_turret.position.z - 0.65 * Math.cos(world.tank_turret.rotation.y),
 		                             world.tank_turret.rotation.x, world.tank_turret.rotation.y, world.tank_turret.rotation.z);
 
+		bullet.friendly = true;
 		scene.add(bullet);
 		world.bullets.push(bullet);
 	}
