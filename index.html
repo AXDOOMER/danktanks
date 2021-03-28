@@ -67,7 +67,7 @@ function create_sky(scene) {
 }
 
 function create_moutains_box(scene) {
-	moutain_texture = new THREE.TextureLoader().load( "mountains.png" );
+	moutain_texture = new THREE.TextureLoader().load("mountains.webp");
 
 	const moutain_geometry = new THREE.PlaneGeometry( 50, 10, 1, 1 );
 	const moutain_material = new THREE.MeshBasicMaterial( {color: 0xffffff, side: THREE.DoubleSide, map: moutain_texture, transparent: true} );
