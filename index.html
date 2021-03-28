@@ -35,7 +35,7 @@ const RES = "res/";
 
 function create_flying_green_club() {
 	const geometry = new THREE.BoxGeometry();
-	const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+	const material = new THREE.MeshBasicMaterial({color: 0x00ff00});
 	const cube = new THREE.Mesh(geometry, material);
 	cube.position.y = 2;
 
@@ -50,8 +50,8 @@ function create_ground() {
 	texture.repeat.set(10, 10);
 
 	// Create plane
-	const geometry = new THREE.PlaneGeometry( 50, 50, 1, 1 );
-	const material = new THREE.MeshBasicMaterial( {color: 0xffffff, side: THREE.DoubleSide, map: texture} );
+	const geometry = new THREE.PlaneGeometry(50, 50, 1, 1);
+	const material = new THREE.MeshBasicMaterial({color: 0xffffff, side: THREE.DoubleSide, map: texture});
 	const plane = new THREE.Mesh(geometry, material);
 
 	// Set position
@@ -89,46 +89,49 @@ function create_sky(scene) {
 function create_moutains_box(scene) {
 	moutain_texture = new THREE.TextureLoader().load(RES + "mountains.webp");
 
-	const moutain_geometry = new THREE.PlaneGeometry( 50, 10, 1, 1 );
-	const moutain_material = new THREE.MeshBasicMaterial( {color: 0xffffff, side: THREE.DoubleSide, map: moutain_texture, transparent: true} );
+	const moutain_geometry = new THREE.PlaneGeometry(50, 10, 1, 1);
+	const moutain_material = new THREE.MeshBasicMaterial({color: 0xffffff, side: THREE.DoubleSide, map: moutain_texture, transparent: true});
 	var moutain_plane = new THREE.Mesh(moutain_geometry, moutain_material);
 
 	moutain_plane.position.z = -25;
-	scene.add( moutain_plane );
+	scene.add(moutain_plane);
 
-	var moutain_plane2 = new THREE.Mesh( moutain_geometry, moutain_material );
+	var moutain_plane2 = new THREE.Mesh(moutain_geometry, moutain_material);
 	moutain_plane2.position.z = 25;
 	moutain_plane2.rotation.y = Math.PI;
-	scene.add( moutain_plane2 );
+	scene.add(moutain_plane2);
 
-	var moutain_plane3 = new THREE.Mesh( moutain_geometry, moutain_material );
+	var moutain_plane3 = new THREE.Mesh(moutain_geometry, moutain_material);
 	moutain_plane3.position.x = 25;
 	moutain_plane3.rotation.y = Math.PI / 2;
-	scene.add( moutain_plane3 );
+	scene.add(moutain_plane3);
 
-	var moutain_plane4 = new THREE.Mesh( moutain_geometry, moutain_material );
+	var moutain_plane4 = new THREE.Mesh(moutain_geometry, moutain_material);
 	moutain_plane4.position.x = -25;
 	moutain_plane4.rotation.y = -Math.PI / 2;
-	scene.add( moutain_plane4 );
+	scene.add(moutain_plane4);
 }
 
 function create_player_tank_base() {
 	var textureLoader = new THREE.TextureLoader();
 
 	let materialArray = [
-		new THREE.MeshBasicMaterial( { map: textureLoader.load(RES + "tank_side.jpg") } ), // droit
-		new THREE.MeshBasicMaterial( { map: textureLoader.load(RES + "tank_side.jpg") } ), // gauche
-		new THREE.MeshBasicMaterial( { map: textureLoader.load(RES + "tank_top2.jpg") } ), // top
-		new THREE.MeshBasicMaterial( { map: textureLoader.load(RES + "tank_green.jpg") } ), // bottom
-		new THREE.MeshBasicMaterial( { map: textureLoader.load(RES + "tank_back.jpg") } ), // rear
-		new THREE.MeshBasicMaterial( { map: textureLoader.load(RES + "tank_front.jpg") } ), // avant
+		new THREE.MeshBasicMaterial({map: textureLoader.load(RES + "tank_side.jpg")}),  // right
+		new THREE.MeshBasicMaterial({map: textureLoader.load(RES + "tank_side.jpg")}),  // left
+		new THREE.MeshBasicMaterial({map: textureLoader.load(RES + "tank_top2.jpg")}),  // top
+		new THREE.MeshBasicMaterial({map: textureLoader.load(RES + "tank_green.jpg")}), // bottom
+		new THREE.MeshBasicMaterial({map: textureLoader.load(RES + "tank_back.jpg")}),  // rear
+		new THREE.MeshBasicMaterial({map: textureLoader.load(RES + "tank_front.jpg")}), // front
 	];
 
-	const tank_base_geometry = new THREE.BoxGeometry( 0.9, 0.5, 1.4 );
+	const tank_base_geometry = new THREE.BoxGeometry(0.9, 0.5, 1.4);
 	const tank_base = new THREE.Mesh(tank_base_geometry, materialArray);
 
 	// Set position lower so it touches the ground
 	tank_base.position.y = -0.75;
+	tank_base.stuck = false;
+	tank_base.time_since_last_engine_noise = 0;
+	tank_base.speed = 0;
 
 	return tank_base;
 }
@@ -137,16 +140,15 @@ function create_player_tank_turret() {
 	var textureLoader = new THREE.TextureLoader();
 
 	let materialArray = [
-		new THREE.MeshBasicMaterial( { map: textureLoader.load(RES + "tank_green.jpg") } ), // droit
-		new THREE.MeshBasicMaterial( { map: textureLoader.load(RES + "tank_green.jpg") } ), // gauche
-		new THREE.MeshBasicMaterial( { map: textureLoader.load(RES + "tank_top1.jpg") } ), // top
-		new THREE.MeshBasicMaterial( { map: textureLoader.load(RES + "tank_green.jpg") } ), // bottom
-		new THREE.MeshBasicMaterial( { map: textureLoader.load(RES + "tank_turret_back.jpg") } ), // rear
-		new THREE.MeshBasicMaterial( { map: textureLoader.load(RES + "tank_green.jpg") } ), // avant
+		new THREE.MeshBasicMaterial({map: textureLoader.load(RES + "tank_green.jpg")}), // right
+		new THREE.MeshBasicMaterial({map: textureLoader.load(RES + "tank_green.jpg")}), // left
+		new THREE.MeshBasicMaterial({map: textureLoader.load(RES + "tank_top1.jpg")}),  // top
+		new THREE.MeshBasicMaterial({map: textureLoader.load(RES + "tank_green.jpg")}), // bottom
+		new THREE.MeshBasicMaterial({map: textureLoader.load(RES + "tank_turret_back.jpg")}), // rear
+		new THREE.MeshBasicMaterial({map: textureLoader.load(RES + "tank_green.jpg")}), // front
 	];
 
-	//const tank_base_material = new THREE.MeshBasicMaterial( { color: 0xffffff, map: materialArray } );
-	const tank_turret_geometry = new THREE.BoxGeometry( 0.6, 0.3, 0.6 );
+	const tank_turret_geometry = new THREE.BoxGeometry(0.6, 0.3, 0.6);
 	const tank_turret = new THREE.Mesh(tank_turret_geometry, materialArray);
 
 	tank_cannon = create_player_tank_cannon();
@@ -156,6 +158,7 @@ function create_player_tank_turret() {
 	group.add(tank_cannon);
 
 	group.position.y = -0.35;
+	group.time_since_last_shot = 0;
 
 	return group;
 }
@@ -179,12 +182,12 @@ function create_player_tank_cannon() {
 	bottom_texture.rotation = Math.PI;
 
 	let materialArray = [
-		new THREE.MeshBasicMaterial( { map: right_texture } ), // droit
-		new THREE.MeshBasicMaterial( { map: left_texture } ), // gauche
-		new THREE.MeshBasicMaterial( { map: textureLoader.load(RES + "tank_cannon.jpg") } ), // top
-		new THREE.MeshBasicMaterial( { map: bottom_texture } ), // bottom
-		new THREE.MeshBasicMaterial( { color: 0x1e290c } ), // rear
-		new THREE.MeshBasicMaterial( { color: 0x000000 } ), // avant
+		new THREE.MeshBasicMaterial({map: right_texture}), // right
+		new THREE.MeshBasicMaterial({map: left_texture}),  // left
+		new THREE.MeshBasicMaterial({map: textureLoader.load(RES + "tank_cannon.jpg")}), // top
+		new THREE.MeshBasicMaterial({map: bottom_texture}), // bottom
+		new THREE.MeshBasicMaterial({color: 0x1e290c}), // rear
+		new THREE.MeshBasicMaterial({color: 0x000000}), // front
 	];
 
 	const tank_cannon_geometry = new THREE.BoxGeometry(0.1, 0.1, 0.8);
@@ -234,20 +237,19 @@ function create_small_house(px, pz, ry) {
 	roof_texture.wrapS = THREE.RepeatWrapping;
 	roof_texture.wrapT = THREE.RepeatWrapping;
 	roof_texture.repeat.set(12, 3);
-	const roof_material = new THREE.MeshBasicMaterial( {color: 0xffffff, map: roof_texture} );
+	const roof_material = new THREE.MeshBasicMaterial({color: 0xffffff, map: roof_texture});
 	const roof = new THREE.Mesh(roof_geometry, roof_material);
-	roof.position.x = px;
 	roof.position.y = 1.75;
-	roof.position.z = pz;
-	roof.rotation.y = ry + Math.PI / 4;
+	// Align roof with house
+	roof.rotation.y = Math.PI / 4;
 
 	let materialArray = [
-		new THREE.MeshBasicMaterial( { map: textureLoader.load(RES + "wall_two_windows.jpg") } ), // droit
-		new THREE.MeshBasicMaterial( { map: textureLoader.load(RES + "wall_two_windows.jpg") } ), // gauche
-		new THREE.MeshBasicMaterial( { map: textureLoader.load(RES + "roof.jpg") } ), // top
-		new THREE.MeshBasicMaterial( { map: textureLoader.load(RES + "ground.jpg") } ), // bottom
-		new THREE.MeshBasicMaterial( { map: textureLoader.load(RES + "wall_two_windows.jpg") } ), // rear
-		new THREE.MeshBasicMaterial( { map: textureLoader.load(RES + "door-small.jpg") } ), // avant
+		new THREE.MeshBasicMaterial({map: textureLoader.load(RES + "wall_two_windows.jpg")}), // right
+		new THREE.MeshBasicMaterial({map: textureLoader.load(RES + "wall_two_windows.jpg")}), // left
+		new THREE.MeshBasicMaterial({map: textureLoader.load(RES + "roof.jpg")}), // top
+		new THREE.MeshBasicMaterial({map: textureLoader.load(RES + "ground.jpg")}), // bottom
+		new THREE.MeshBasicMaterial({map: textureLoader.load(RES + "wall_two_windows.jpg")}), // rear
+		new THREE.MeshBasicMaterial({map: textureLoader.load(RES + "door-small.jpg")}), // front
 	];
 
 	const house_geometry = new THREE.BoxGeometry(4, 2, 4);
@@ -256,14 +258,15 @@ function create_small_house(px, pz, ry) {
 	// Set position lower so it touches the ground
 	house.position.y = 0;
 
-	// Init at desired position
-	house.position.x = px;
-	house.position.z = pz;
-	house.rotation.y = ry;
-
 	group = new THREE.Object3D();
 	group.add(roof);
 	group.add(house);
+
+	// Init position and rotation on map
+	group.position.x = px;
+	group.position.z = pz;
+	group.rotation.y = ry;
+	group.radius = 2;
 
 	return group;
 }
@@ -277,20 +280,19 @@ function create_big_house(px, pz, ry) {
 	roof_texture.wrapS = THREE.RepeatWrapping;
 	roof_texture.wrapT = THREE.RepeatWrapping;
 	roof_texture.repeat.set(10, 1);
-	const roof_material = new THREE.MeshBasicMaterial( {color: 0xffffff, map: roof_texture} );
+	const roof_material = new THREE.MeshBasicMaterial({color: 0xffffff, map: roof_texture});
 	const roof = new THREE.Mesh(roof_geometry, roof_material);
-	roof.position.x = px;
 	roof.position.y = 3;
-	roof.position.z = pz;
-	roof.rotation.y = ry + Math.PI / 4;
+	// Align roof with house
+	roof.rotation.y = Math.PI / 4;
 
 	let house_material = [
-		new THREE.MeshBasicMaterial( { map: textureLoader.load(RES + "wall_height_windows.jpg") } ), // droit
-		new THREE.MeshBasicMaterial( { map: textureLoader.load(RES + "wall_height_windows.jpg") } ), // gauche
-		new THREE.MeshBasicMaterial( { map: textureLoader.load(RES + "roof.jpg") } ), // top
-		new THREE.MeshBasicMaterial( { map: textureLoader.load(RES + "ground.jpg") } ), // bottom
-		new THREE.MeshBasicMaterial( { map: textureLoader.load(RES + "wall_six_windows.jpg") } ), // rear
-		new THREE.MeshBasicMaterial( { map: textureLoader.load(RES + "door-big.jpg") } ), // avant
+		new THREE.MeshBasicMaterial({map: textureLoader.load(RES + "wall_height_windows.jpg")}), // right
+		new THREE.MeshBasicMaterial({map: textureLoader.load(RES + "wall_height_windows.jpg")}), // left
+		new THREE.MeshBasicMaterial({map: textureLoader.load(RES + "roof.jpg")}), // top
+		new THREE.MeshBasicMaterial({map: textureLoader.load(RES + "ground.jpg")}), // bottom
+		new THREE.MeshBasicMaterial({map: textureLoader.load(RES + "wall_six_windows.jpg")}), // rear
+		new THREE.MeshBasicMaterial({map: textureLoader.load(RES + "door-big.jpg")}), // front
 	];
 
 	const house_geometry = new THREE.BoxGeometry(6, 3, 6);
@@ -299,27 +301,39 @@ function create_big_house(px, pz, ry) {
 	// Set position lower so it touches the ground
 	house.position.y = 0.5;
 
-	// Init at desired position
-	house.position.x = px;
-	house.position.z = pz;
-	house.rotation.y = ry;
-
 	group = new THREE.Object3D();
 	group.add(roof);
 	group.add(house);
 
+	// Init position and rotation on map
+	group.position.x = px;
+	group.position.z = pz;
+	group.rotation.y = ry;
+	group.radius = 3;
+
 	return group;
 }
 
-/*================  INIT RENDER  ================*/
+/*================  INIT RENDERER  ================*/
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(90, window.innerWidth / window.innerHeight, 0.1, 1000);
-//camera.position.z = 5;
 camera.position.y = 0.4;
 
 const renderer = new THREE.WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
+
+/*================  INIT SOUNDS ================*/
+
+/*
+audioShot = new Audio(RES + "shot.mp3");
+audioExplode = new Audio(RES + "explode.mp3");
+audioEngine1 = new Audio(RES + "idle.mp3");
+audioEngine2 = new Audio(RES + "speed1.mp3");
+audioEngine3 = new Audio(RES + "speed2.mp3");
+*/
+
+// How to implement audio loop without gapping: https://stackoverflow.com/a/22446616
 
 /*================  INIT GAME WORLD  ================*/
 
@@ -351,7 +365,7 @@ scene.add(world.tank_turret);
 stats = createStats();
 document.body.appendChild(stats.domElement);
 
-// Add array for bullets (it really is a shell)
+// Add array for bullets (they really are shells)
 world.bullets = [];
 // Add array for houses (buildings)
 world.houses = [];
@@ -383,9 +397,9 @@ onkeydown = onkeyup = function(e) {
 /*================  INIT ANIMATION  ================*/
 
 const animate = function () {
-	setTimeout( function() {
-		requestAnimationFrame( animate );
-	}, 1000 / 60 );
+	setTimeout(function() {
+		requestAnimationFrame(animate);
+	}, 1000 / 60);
 
 	/*============ UPDATE PLAYER =============*/
 
@@ -409,6 +423,7 @@ const animate = function () {
 		world.tank_base.position.x -= 0.2 * SPEED_MULTIPLIER * Math.sin(world.tank_base.rotation.y);
 		world.tank_base.position.z -= 0.2 * SPEED_MULTIPLIER * Math.cos(world.tank_base.rotation.y);
 	}
+
 
 	// down arrow
 	if (map[40]) {
