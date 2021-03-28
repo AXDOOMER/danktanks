@@ -184,6 +184,7 @@ document.body.appendChild(renderer.domElement);
 /*================  INIT GAME WORLD  ================*/
 
 const world = new Object();
+SPEED_MULTIPLIER = 0.5;
 
 // Add flying cube
 world.cube = create_flying_green_club();
@@ -223,26 +224,39 @@ var map = {}; // You could also use an array
 onkeydown = onkeyup = function(e) {
 	e = e || event; // to deal with IE
 	map[e.keyCode] = e.type == 'keydown';
+}
+
+/*================  INIT ANIMATION  ================*/
+
+const animate = function () {
+    setTimeout( function() {
+        requestAnimationFrame( animate );
+    }, 1000 / 60 );
+
+	world.cube.rotation.x += 0.01;
+	world.cube.rotation.y += 0.01;
+
+	/*============ UPDATE PLAYER =============*/
 
 	// left arrow
 	if (map[37]) {
 		// turn left
-		world.tank_base.rotation.y += 0.1;
-		world.tank_turret.rotation.y += 0.1;
+		world.tank_base.rotation.y += 0.1 * SPEED_MULTIPLIER;
+		world.tank_turret.rotation.y += 0.1 * SPEED_MULTIPLIER;
 	}
 
 	// right arrow
 	if (map[39]) {
 		// turn right
-		world.tank_base.rotation.y -= 0.1;
-		world.tank_turret.rotation.y -= 0.1;
+		world.tank_base.rotation.y -= 0.1 * SPEED_MULTIPLIER;
+		world.tank_turret.rotation.y -= 0.1 * SPEED_MULTIPLIER;
 	}
 
 	// up arrow
 	if (map[38]) {
 		// move forward
-		world.tank_base.position.x -= 0.2 * Math.sin(world.tank_base.rotation.y);
-		world.tank_base.position.z -= 0.2 * Math.cos(world.tank_base.rotation.y);
+		world.tank_base.position.x -= 0.2 * SPEED_MULTIPLIER * Math.sin(world.tank_base.rotation.y);
+		world.tank_base.position.z -= 0.2 * SPEED_MULTIPLIER * Math.cos(world.tank_base.rotation.y);
 //		world.tank_turret.position.x -= 0.2 * Math.sin(world.tank_base.rotation.y);
 //		world.tank_turret.position.z -= 0.2 * Math.cos(world.tank_base.rotation.y);
 	}
@@ -250,8 +264,8 @@ onkeydown = onkeyup = function(e) {
 	// down arrow
 	if (map[40]) {
 		// move backwards
-		world.tank_base.position.x += 0.2 * Math.sin(world.tank_base.rotation.y);
-		world.tank_base.position.z += 0.2 * Math.cos(world.tank_base.rotation.y);
+		world.tank_base.position.x += 0.2 * SPEED_MULTIPLIER * Math.sin(world.tank_base.rotation.y);
+		world.tank_base.position.z += 0.2 * SPEED_MULTIPLIER * Math.cos(world.tank_base.rotation.y);
 //		world.tank_turret.position.x += 0.2 * Math.sin(world.tank_base.rotation.y);
 //		world.tank_turret.position.z += 0.2 * Math.cos(world.tank_base.rotation.y);
 	}
@@ -259,25 +273,25 @@ onkeydown = onkeyup = function(e) {
 	// comma
 	if (map[188]) {
 		// turn turret left
-		world.tank_turret.rotation.y += 0.1;
+		world.tank_turret.rotation.y += 0.1 * SPEED_MULTIPLIER;
 	}
 
 	// period
 	if (map[190]) {
 		// turn turret right
-		world.tank_turret.rotation.y -= 0.1;
+		world.tank_turret.rotation.y -= 0.1 * SPEED_MULTIPLIER;
 	}
 
 	// page up
 	if (map[33]) {
 		// move camera up
-		camera.position.y += 1;
+		camera.position.y += 0.05;
 	}
 
 	// page up
 	if (map[34]) {
 		// move camera down
-		camera.position.y -= 1;
+		camera.position.y -= 0.05;
 	}
 
 	// Update turrent position on tank base
@@ -292,31 +306,20 @@ onkeydown = onkeyup = function(e) {
 	const xdiff = camera.position.x - world.tank_turret.position.x;
 	const zdiff = camera.position.z - world.tank_turret.position.z;
 	camera.rotation.y = Math.atan2(xdiff, zdiff);
-}
 
-
-
-/*================  INIT ANIMATION  ================*/
-
-const animate = function () {
-    //setTimeout( function() {
-        requestAnimationFrame( animate );
-    //}, 1000 / 60 );
-
-	world.cube.rotation.x += 0.01;
-	world.cube.rotation.y += 0.01;
-
-	renderer.render(scene, camera);
-
-	hud.innerHTML = "Camera: </br>    PosX: " + camera.position.x + 
-	                        "</br>    PosY: " + camera.position.y +
-	                        "</br>    PosZ: " + camera.position.z + 
-	                        "</br>    RotX: " + camera.rotation.x +
-	                        "</br>    RotY: " + camera.rotation.y +
-	                        "</br>    RotZ: " + camera.rotation.z;
+	/*=========== UPDATE RENDERING ===============*/
 
 	// scroll background left and right
 	scene.background.offset = new THREE.Vector2(-camera.rotation.y / (Math.PI * 2), 0.6);
+
+	renderer.render(scene, camera);
+
+	hud.innerHTML = "Camera: </br>    PosX: " + camera.position.x +
+	                        "</br>    PosY: " + camera.position.y +
+	                        "</br>    PosZ: " + camera.position.z +
+	                        "</br>    RotX: " + camera.rotation.x +
+	                        "</br>    RotY: " + camera.rotation.y +
+	                        "</br>    RotZ: " + camera.rotation.z;
 
 	stats.update();
 };
