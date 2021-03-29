@@ -1,4 +1,5 @@
 // threejs.org/license
+// file downloaded from https://threejs.org/build/three.js
 (function (global, factory) {
 	typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
 	typeof define === 'function' && define.amd ? define(['exports'], factory) :
