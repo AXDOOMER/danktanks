@@ -62,29 +62,29 @@ function create_moutains_box(scene) {
 
 	const moutain_geometry = new THREE.PlaneGeometry(50, 10, 1, 1);
 	const moutain_material = new THREE.MeshBasicMaterial({color: 0xffffff, side: THREE.DoubleSide, map: moutain_texture, transparent: true});
-	var moutain_plane = new THREE.Mesh(moutain_geometry, moutain_material);
+	const moutain_plane = new THREE.Mesh(moutain_geometry, moutain_material);
 
 	moutain_plane.position.z = -25;
 	scene.add(moutain_plane);
 
-	var moutain_plane2 = new THREE.Mesh(moutain_geometry, moutain_material);
+	const moutain_plane2 = new THREE.Mesh(moutain_geometry, moutain_material);
 	moutain_plane2.position.z = 25;
 	moutain_plane2.rotation.y = Math.PI;
 	scene.add(moutain_plane2);
 
-	var moutain_plane3 = new THREE.Mesh(moutain_geometry, moutain_material);
+	const moutain_plane3 = new THREE.Mesh(moutain_geometry, moutain_material);
 	moutain_plane3.position.x = 25;
 	moutain_plane3.rotation.y = Math.PI / 2;
 	scene.add(moutain_plane3);
 
-	var moutain_plane4 = new THREE.Mesh(moutain_geometry, moutain_material);
+	const moutain_plane4 = new THREE.Mesh(moutain_geometry, moutain_material);
 	moutain_plane4.position.x = -25;
 	moutain_plane4.rotation.y = -Math.PI / 2;
 	scene.add(moutain_plane4);
 }
 
 function create_player_tank_base() {
-	var textureLoader = new THREE.TextureLoader();
+	const textureLoader = new THREE.TextureLoader();
 
 	let materialArray = [
 		new THREE.MeshBasicMaterial({map: textureLoader.load(RES + "tank_side.jpg")}),  // right
@@ -108,7 +108,7 @@ function create_player_tank_base() {
 }
 
 function create_player_tank_turret() {
-	var textureLoader = new THREE.TextureLoader();
+	const textureLoader = new THREE.TextureLoader();
 
 	let materialArray = [
 		new THREE.MeshBasicMaterial({map: textureLoader.load(RES + "tank_green.jpg")}), // right
@@ -135,7 +135,7 @@ function create_player_tank_turret() {
 }
 
 function create_player_tank_cannon() {
-	var textureLoader = new THREE.TextureLoader();
+	const textureLoader = new THREE.TextureLoader();
 
 	const left_texture = textureLoader.load(RES + "tank_cannon.jpg");
 	left_texture.wrapS = THREE.RepeatWrapping;
@@ -200,7 +200,7 @@ function create_bullet(px, py, pz, rx, ry, rz) {
 }
 
 function create_small_house(px, pz, ry) {
-	var textureLoader = new THREE.TextureLoader();
+	const textureLoader = new THREE.TextureLoader();
 
 	const roof_geometry = new THREE.ConeGeometry(3, 1.5, 4);
 	const roof_texture = textureLoader.load(RES + "roof.jpg");
@@ -347,7 +347,7 @@ world.houses.push(create_small_house(-5, 8, 1.2));
 world.houses.push(create_big_house(-10, 15, -1));
 world.houses.push(create_big_house(19, -7, 1.6));
 
-for (var i = 0; i < world.houses.length; i++) {
+for (let i = 0; i < world.houses.length; i++) {
 	scene.add(world.houses[i]);
 }
 
@@ -466,7 +466,7 @@ const animate = function () {
 	// Iterates backwards, process older bullets first
 	// If these were two loops, it could be further optimized
 	// by stopping processing when encountering bullets that are not expired
-	for (var i = world.bullets.length - 1; i >= 0; i--) {
+	for (let i = world.bullets.length - 1; i >= 0; i--) {
 		const bullet = world.bullets[i];
 
 		// Destroy if lifetime has expired
