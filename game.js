@@ -48,22 +48,6 @@ function create_ground() {
 	return plane;
 }
 
-function create_onscreen_text() {
-	const text = document.createElement('div');
-	text.style.position = 'absolute';
-	//text.style.zIndex = 1;    // if you still don't see the label, try uncommenting this
-	text.style.width = 100;
-	text.style.height = 100;
-	//text.style.backgroundColor = "white";
-	text.style.color = "white";
-	text.innerHTML = "temp";
-	text.style.top = 200 + 'px';
-	text.style.left = 200 + 'px';
-	text.id = "hud";
-
-	document.body.appendChild(text);
-}
-
 function create_sky(scene) {
 	const loader = new THREE.TextureLoader();
 	scene.background = loader.load(RES + "sky.jpg");
@@ -331,9 +315,6 @@ SPEED_MULTIPLIER = 0.5;
 world.ground = create_ground();
 scene.add(world.ground);
 
-// Add on screen text
-create_onscreen_text();
-
 // Add sky to scene
 create_sky(scene);
 
@@ -507,13 +488,6 @@ const animate = function () {
 	scene.background.offset = new THREE.Vector2(-camera.rotation.y / (Math.PI * 2), 0.6);
 
 	renderer.render(scene, camera);
-
-	hud.innerHTML = "Camera: </br>    PosX: " + camera.position.x +
-	                        "</br>    PosY: " + camera.position.y +
-	                        "</br>    PosZ: " + camera.position.z +
-	                        "</br>    RotX: " + camera.rotation.x +
-	                        "</br>    RotY: " + camera.rotation.y +
-	                        "</br>    RotZ: " + camera.rotation.z;
 
 	stats.update();
 };
