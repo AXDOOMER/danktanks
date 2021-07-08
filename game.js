@@ -20,15 +20,6 @@ const RES = "res/";
 
 /*================  HELPER FUNCTIONS  ================*/
 
-function create_flying_green_club() {
-	const geometry = new THREE.BoxGeometry();
-	const material = new THREE.MeshBasicMaterial({color: 0x00ff00});
-	const cube = new THREE.Mesh(geometry, material);
-	cube.position.y = 2;
-
-	return cube;
-}
-
 function create_ground() {
 	// Load a texture
 	texture = new THREE.TextureLoader().load(RES + "ground.jpg");
@@ -430,7 +421,7 @@ const animate = function () {
 
 	// é or /
 	if (map[191]) {
-		// reset turrent rotation and camera height
+		// reset turret rotation and camera height
 		camera.position.y = 0.4;
 		world.tank_turret.rotation.y = world.tank_base.rotation.y;
 	}
